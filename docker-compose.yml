@@ -1,6 +1,6 @@
 services:
   mysql:
-    user: "${UID}:${GID}" 
+    user: "${UID:-1000}:${GID:-1000}"
     image: mysql:5.7
     container_name: mysql
     environment:
@@ -31,7 +31,8 @@ services:
       MYSQL_PASSWORD: root
       MYSQL_DB: devops
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - twotier
     restart: always
