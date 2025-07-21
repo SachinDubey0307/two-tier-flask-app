@@ -20,11 +20,9 @@ services:
       start_period: 60s
       timeout: 5s
 
-      
   flaskapp:
-    build:
       context: .
-    container_name: flaskapp
+      container_name: flaskapp
     environment:
       MYSQL_PASSWORD: admin
       MYSQL_USER: root
@@ -39,8 +37,9 @@ services:
 
     depends_on:
       - mysql
-      volumes:
-  mysql_data_new:
+    restart: always
 
+volumes:
+  mysql_data_new:
 networks:
   twotier:
