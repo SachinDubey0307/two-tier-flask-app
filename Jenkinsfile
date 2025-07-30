@@ -8,6 +8,11 @@ pipeline{
                 git url: "https://github.com/SachinDubey0307/two-tier-flask-app.git", branch: "master"
             }
         }
+        stage("Trivy File System scanned"){
+            steps{
+                sh "trivy fs . -o result.json"
+            }
+        }
         stage("Code Build by Docker"){
             steps{
                 sh "docker build -t two-tier-flask-app ."
@@ -50,7 +55,8 @@ pipeline{
         }
         failure{
             script{
-                emailext from: 'sdubey.sachin03@gmail.com',
+                emailext attchLog: true,
+                from: 'sdubey.sachin03@gmail.com',
                 to: 'sdubey.sachin03@gmail.com',
                 body: 'Build Failed for Falsk - App',
                 subject: 'Build Failed for Falsk - App'
