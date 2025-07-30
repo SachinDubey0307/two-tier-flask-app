@@ -44,16 +44,16 @@ pipeline{
             script{
                 emailext from: 'sdubey.sachin03@gmail.com',
                 to: 'sdubey.sachin03@gmail.com',
-                body: 'Build success for Demo CICD App',
-                subject: 'Build success for Demo CICD App'
+                body: 'Build success for Flask - App',
+                subject: 'Build success for  Flask - App'
             }
         }
         failure{
             script{
                 emailext from: 'sdubey.sachin03@gmail.com',
                 to: 'sdubey.sachin03@gmail.com',
-                body: 'Build Failed for Demo CICD App',
-                subject: 'Build Failed for Demo CICD App'
+                body: 'Build Failed for Falsk - App',
+                subject: 'Build Failed for Falsk - App'
             }
         }
     }
