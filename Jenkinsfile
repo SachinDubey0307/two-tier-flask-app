@@ -1,65 +1,43 @@
 pipeline{
-    
-    agent { label "dev"};
-    
+    agent any;
     stages{
-        stage("Code Clone/Pull"){
+        stage("pull/clone form Github"){
             steps{
-                git url: "https://github.com/SachinDubey0307/two-tier-flask-app.git", branch: "master"
+               git url: "https://github.com/SachinDubey0307/two-tier-flask-app.git",branch: "master"
             }
         }
-        stage("Trivy File System scanned"){
-            steps{
-                sh "trivy fs . -o result.json"
+        stage("teting"){
+           steps{
+               echo "Unit testing done"
             }
         }
-        stage("Code Build by Docker"){
-            steps{
-                sh "docker build -t two-tier-flask-app ."
+        stage("build from dockerfile"){
+               steps{
+             sh "docker build -t flaskapp:latest ."
+             echo "you have to add current logged in user and jenkins user to docker group due to docker permission issue"
+             echo "sudo usermod -aG docker ubuntu"
+             echo "sudo usermod -aG docker jenkins"
+             echo "sudo systemctl restart jenkins"
             }
         }
-        stage("Test"){
-            steps{
-                echo "test cases given by QA/DEV TEAM"
-            }
-        }
-        stage("Push To Docker-Hub"){
-            steps{
-                withCredentials([usernamePassword(
-                credentialsId:"dockerHubCreds",
-                passwordVariable: "dockerHubPass",
-                usernameVariable: "dockerHubUser"
-                )]){
-                    
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass} "
-                sh "docker image tag two-tier-flask-app ${env.dockerHubUser}/two-tier-flask-app"
-                sh "docker push ${env.dockerHubUser}/two-tier-flask-app:latest"
-                
-                }
-            }
-        }
-        stage("Deployment"){
-            steps{
-            sh "docker compose up -d --build flask-app"
-            }
+        stage("push Image to Docker Hub"){
+    steps{
+        withCredentials([usernamePassword(
+            credentialsId: "dockerhubcreds",
+            usernameVariable: "dockerHubUser",
+            passwordVariable: "dockerHubPass"
+        )]){
+            sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+            sh "docker image tag flaskapp:latest ${env.dockerHubUser}/flaskapp:latest"
+            sh "docker push ${env.dockerHubUser}/flaskapp:latest"
         }
     }
-    post{
-        success{
-            script{
-                emailext from: 'sdubey.sachin03@gmail.com',
-                to: 'sdubey.sachin03@gmail.com',
-                body: 'Build success for Flask - App',
-                subject: 'Build success for  Flask - App'
-            }
-        }
-        failure{
-            script{
-                emailext attchLog: true,
-                from: 'sdubey.sachin03@gmail.com',
-                to: 'sdubey.sachin03@gmail.com',
-                body: 'Build Failed for Falsk - App',
-                subject: 'Build Failed for Falsk - App'
+}
+        stage("Deploye on EKS Cluster/Docker Compose"){
+            steps{
+            echo "sudo apt-get install docker-compose-v2"
+            echo "docker compose version"
+            sh "docker compose up -d --build flask-app"
             }
         }
     }
