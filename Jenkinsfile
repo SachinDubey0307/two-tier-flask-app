@@ -1,5 +1,5 @@
 pipeline{
-    agent any;
+    agent { label 'dev-agent' }
     stages{
         stage("pull/clone form Github"){
             steps{
