@@ -1,5 +1,5 @@
 pipeline{
-    agent { label 'dev-agen' }
+    agent { label 'dev-agent' }
     stages{
         stage("pull/clone form Github"){
             steps{
@@ -13,7 +13,7 @@ pipeline{
         }
         stage("build from dockerfile"){
                steps{
-             sh "docker build -t flaskapp:latest ."
+             sh "docker buil -t flaskapp:latest ."
              echo "you have to add current logged in user and jenkins user to docker group due to docker permission issue"
              echo "sudo usermod -aG docker ubuntu"
              echo "sudo usermod -aG docker jenkins"
