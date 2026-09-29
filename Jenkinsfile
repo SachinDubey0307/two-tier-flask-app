@@ -41,4 +41,14 @@ pipeline{
             }
         }
     }
+   post {
+    success {
+        emailext(
+            from: 'sdubey.sachin03@gmail.com',
+            to: 'sdubey.sachin03@gmail.com',
+            subject: 'demo ci-cd pipeline',
+            body: 'build successful'
+        )
+    }
+}
 }
