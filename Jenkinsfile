@@ -13,7 +13,7 @@ pipeline{
         }
         stage("build from dockerfile"){
                steps{
-             sh "docker buil -t flaskapp:latest ."
+             sh "docker build -t flaskapp:latest ."
              echo "you have to add current logged in user and jenkins user to docker group due to docker permission issue"
              echo "sudo usermod -aG docker ubuntu"
              echo "sudo usermod -aG docker jenkins"
